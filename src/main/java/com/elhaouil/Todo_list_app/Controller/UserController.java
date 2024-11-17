@@ -3,13 +3,16 @@ package com.elhaouil.Todo_list_app.Controller;
 import com.elhaouil.Todo_list_app.DTO.UserDetailsDTO;
 import com.elhaouil.Todo_list_app.DTO.UserSecurityDTO;
 import com.elhaouil.Todo_list_app.Exception.UserInvalidRegistration;
+import com.elhaouil.Todo_list_app.Model.Role;
 import com.elhaouil.Todo_list_app.Model.User;
 import com.elhaouil.Todo_list_app.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class UserController {
@@ -34,7 +37,13 @@ public class UserController {
 
     }
 
-    @DeleteMapping("user/{id}")
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/userRoles/{id}")
+    public Set<Role> getRoles(@PathVariable int id){
+        return service.getRoles(id);
+    }
+
+    @DeleteMapping("admin/user/{id}")
     public void deleteById(@PathVariable int id){
         service.deleteById(id);
     }
@@ -49,7 +58,7 @@ public class UserController {
         return service.updateById(user);
     }
 
-    @GetMapping("user")
+    @GetMapping("admin/user")
     public List<UserDetailsDTO> getAllUsers(){
         return service.findAll();
     }

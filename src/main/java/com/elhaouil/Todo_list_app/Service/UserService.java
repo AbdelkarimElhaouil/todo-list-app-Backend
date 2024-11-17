@@ -3,6 +3,7 @@ package com.elhaouil.Todo_list_app.Service;
 import com.elhaouil.Todo_list_app.DTO.UserDetailsDTO;
 import com.elhaouil.Todo_list_app.DTO.UserSecurityDTO;
 import com.elhaouil.Todo_list_app.Exception.UserInvalidRegistration;
+import com.elhaouil.Todo_list_app.Model.Role;
 import com.elhaouil.Todo_list_app.Model.User;
 import com.elhaouil.Todo_list_app.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -26,6 +28,9 @@ public class UserService {
         try {
             if(user.getUsername() == null){
                 throw new UserInvalidRegistration("Cannot Added, username = null");
+            }
+            else if(user.getPassword() == null){
+                throw new UserInvalidRegistration("Cannot Added, password = null");
             }
             else if(repo.existsByUsername(user.getUsername())){
                 throw new UserInvalidRegistration("User is Already Exist");
@@ -127,5 +132,10 @@ public class UserService {
         user.setPassword(encoder.encode(user.getPassword()));
         repo.save(user);
         return "The User Updated Successfully";
+    }
+
+    public Set<Role> getRoles(int id) {
+        User user = repo.findById(id);
+        return user.getRoles();
     }
 }
