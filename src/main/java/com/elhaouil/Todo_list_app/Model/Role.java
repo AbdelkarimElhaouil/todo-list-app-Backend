@@ -1,5 +1,7 @@
 package com.elhaouil.Todo_list_app.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +21,7 @@ public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue
-    private long role_id;
+    private long id;
     @Column(nullable = false)
     private String name;
     @ManyToMany(mappedBy = "roles")

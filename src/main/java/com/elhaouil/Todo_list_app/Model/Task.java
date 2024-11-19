@@ -16,9 +16,10 @@ import java.util.List;
 @Component
 public class Task {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
     private String description;
     @ManyToOne()
-    @JoinColumn(name = "user_task")
+    @JoinColumn(name = "user_id")
     private User user;
 }

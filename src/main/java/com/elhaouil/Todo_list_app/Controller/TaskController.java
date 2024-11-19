@@ -1,35 +1,45 @@
 package com.elhaouil.Todo_list_app.Controller;
 
 import com.elhaouil.Todo_list_app.DTO.TaskDTO;
+import com.elhaouil.Todo_list_app.Model.User;
 import com.elhaouil.Todo_list_app.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
+@RequestMapping("task")
 public class TaskController {
 
     @Autowired
     TaskService service;
 
-    @PostMapping("task/{username}")
-    public void addTask(@RequestBody String task, @PathVariable String username){
-        service.addTask(task, username);
+
+    @GetMapping("all/{username}")
+    public List<String> getTasks(@PathVariable String username) {
+        return service.getTasks(username);
     }
 
-    @PostMapping("tasks/{username}")
-    public void addTasks(@RequestBody List<String> tasks, @PathVariable String username){
+    @PostMapping("{username}")
+    public void addTask(@RequestBody Map<String, String> task, @PathVariable String username) {
+        String desc = task.get("task");
+        service.addTask(desc, username);
+    }
+
+    @PostMapping("list/{username}")
+    public void addTasks(@RequestBody List<String> tasks, @PathVariable String username) {
         service.addTasks(tasks, username);
     }
 
-    @DeleteMapping("/task/{task_id}")
-    public void deleteTask(@PathVariable long task_id){
-        service.deleteTask(task_id);
+    @DeleteMapping("{username}")
+    public void deleteTask(@RequestBody String desc, @PathVariable String username) {
+        service.deleteTask(desc, username);
     }
 
     @PutMapping("task")
-    public void updateTask(@RequestBody TaskDTO task){
+    public void updateTask(@RequestBody TaskDTO task) {
         service.updateTask(task);
     }
 

@@ -14,12 +14,13 @@ import java.util.stream.Collectors;
 public class UserPrincipal implements UserDetails {
 
     User user;
+
     public UserPrincipal(User user) {
         this.user = user;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return user.getRoles();
     }
 

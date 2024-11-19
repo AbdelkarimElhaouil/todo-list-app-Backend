@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,45 +20,64 @@ public class TaskService {
     TaskRepo taskRepo;
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    User user;
 
-    public void addTask(String desc, String username){
-        if(!userRepo.existsByUsername(username)){
+    public void addTask(String desc, String username) {
+        user = userRepo.findByUsername(username);
+        if (user == null) {
             throw new UsernameNotFoundException("User Not Found");
         }
-        User user = userRepo.findByUsername(username);
         Task task = new Task();
         task.setDescription(desc);
         task.setUser(user);
+        user.getTasks().add(task);
         taskRepo.save(task);
     }
 
     public void addTasks(List<String> descriptions, String username) {
-        if(!userRepo.existsByUsername(username)){
+        if (!userRepo.existsByUsername(username)) {
             throw new UsernameNotFoundException("User Not Found");
         }
         User user = userRepo.findByUsername(username);
-        for(String desc : descriptions){
+        for (String desc : descriptions) {
             Task task = new Task();
             task.setDescription(desc);
             task.setUser(user);
-            taskRepo.save(task);
+            user.getTasks().add(task);
         }
+        userRepo.save(user);
 
     }
 
-    public void deleteTask(long id) {
-        if(!taskRepo.existsById(id)){
+    public void deleteTask(String desc, String username) {
+        user = userRepo.findByUsername(username);
+        Task task = taskRepo.findByDescriptionAndUser(desc, user);
+        if (user == null || task == null) {
             throw new InvalidTaskDeletion("Cannot Delete the task due to invalid credentials");
         }
-        taskRepo.deleteById(id);
+        taskRepo.deleteById(task.getId());
     }
 
     public void updateTask(TaskDTO task) {
-        if(!taskRepo.existsById(task.getId())){
+        Task localTask = new Task();
+        if (!taskRepo.existsById(localTask.getId())) {
             throw new InvalidTaskDeletion("Cannot Update the task due to invalid credentials");
         }
-        Task existedTask = taskRepo.findById(task.getId());
-        existedTask.setDescription(task.getDescription());
-        taskRepo.save(existedTask);
+        localTask = taskRepo.findById(localTask.getId());
+        localTask.setDescription(localTask.getDescription());
+        taskRepo.save(localTask);
+    }
+
+    public List<String> getTasks(String username) {
+        user = userRepo.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User 404");
+        }
+        List<String> tasks = new ArrayList<>();
+        for (Task task : user.getTasks()) {
+            tasks.add(task.getDescription());
+        }
+        return tasks;
     }
 }
