@@ -31,7 +31,7 @@ public class UserService {
             } else if (user.getPassword() == null) {
                 throw new UserInvalidRegistration("Cannot Added, password = null");
             } else if (userRepo.existsByUsername(user.getUsername())) {
-                throw new UserInvalidRegistration("User is Already Exist");
+                throw new UserInvalidRegistration("User is Already Exist with that username " + user.getUsername());
             }
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             role = roleRepo.findById(2);
