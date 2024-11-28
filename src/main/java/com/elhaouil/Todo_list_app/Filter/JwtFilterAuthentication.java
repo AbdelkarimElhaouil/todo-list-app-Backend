@@ -1,17 +1,14 @@
-package com.elhaouil.Todo_list_app.Jwt;
+package com.elhaouil.Todo_list_app.Filter;
 
-import com.elhaouil.Todo_list_app.Model.User;
+import com.elhaouil.Todo_list_app.Jwt.JwtService;
 import com.elhaouil.Todo_list_app.Repo.UserRepo;
-import com.elhaouil.Todo_list_app.Security.MyUserDetailsService;
 import com.elhaouil.Todo_list_app.Security.UserPrincipal;
-import jakarta.persistence.Access;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

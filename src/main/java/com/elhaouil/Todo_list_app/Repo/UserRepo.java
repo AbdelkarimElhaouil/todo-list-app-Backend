@@ -1,21 +1,27 @@
 package com.elhaouil.Todo_list_app.Repo;
 
-import com.elhaouil.Todo_list_app.DTO.UserSecurityDTO;
+import com.elhaouil.Todo_list_app.DTO.UserRegistrationDTO;
 import com.elhaouil.Todo_list_app.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
-    User findByUsername(String username);
+    boolean existsByEmail(String email);
 
-    Boolean findByUsername(User userDTO);
+    User findByUsername(String username); // todo -> change return type to Optional
 
-    Boolean findByUsername(UserSecurityDTO userSecurityDTO);
+    Optional<User> findByEmail(String email);
 
-    User findById(long id);
+    boolean findByUsername(User userDTO);
+
+    boolean findByUsername(UserRegistrationDTO userRegistrationDTO);
+
+    User findById(long id); // todo -> change return type to Optional
 
 }
