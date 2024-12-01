@@ -59,9 +59,9 @@ public class config {
         http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/login", "account/**").permitAll()
+                        .requestMatchers(  "account/**").permitAll()
                         .requestMatchers("user/**", "task/**").authenticated()
-                        .requestMatchers("admin/**").hasRole("ADMIN")
+                        .requestMatchers("admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,46 +1,54 @@
 package com.elhaouil.Todo_list_app.Controller;
 
 import com.elhaouil.Todo_list_app.DTO.TaskDTO;
-import com.elhaouil.Todo_list_app.Model.User;
+import com.elhaouil.Todo_list_app.Jwt.JwtService;
 import com.elhaouil.Todo_list_app.Service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("task")
+@RequiredArgsConstructor
+@RequestMapping("/task")
 public class TaskController {
 
-    @Autowired
-    TaskService service;
+    public final TaskService service;
+    public final JwtService jwtService;
 
-
-    @GetMapping("all/{username}")
-    public List<String> getTasks(@PathVariable String username) {
+    @GetMapping("/all-tasks")
+    public ResponseEntity<List<String>> getTasks(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
         return service.getTasks(username);
     }
 
-    @PostMapping("{username}")
-    public void addTask(@RequestBody Map<String, String> task, @PathVariable String username) {
+    @PostMapping("/add-task")
+    public ResponseEntity<String> addTask(@RequestBody Map<String, String> task, HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
         String desc = task.get("task");
-        service.addTask(desc, username);
+        return service.addTask(desc, username);
     }
 
-    @PostMapping("list/{username}")
-    public void addTasks(@RequestBody List<String> tasks, @PathVariable String username) {
-        service.addTasks(tasks, username);
+    @PostMapping("/add-tasks")
+    public ResponseEntity<String> addTasks(@RequestBody List<String> tasks, HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
+        return service.addTasks(tasks, username);
     }
 
-    @DeleteMapping("{username}")
-    public void deleteTask(@RequestBody String desc, @PathVariable String username) {
-        service.deleteTask(desc, username);
+    @DeleteMapping("/delete-task")
+    public ResponseEntity<String> deleteTask(@RequestBody String desc, HttpServletRequest request) {
+        return service.deleteTask(desc);
     }
 
-    @PutMapping("task")
-    public void updateTask(@RequestBody TaskDTO task) {
-        service.updateTask(task);
+    @PutMapping("/update-task")
+    public ResponseEntity<String> updateTask(@RequestBody String desc, HttpServletRequest request)
+    {
+        return service.updateTask(desc);
     }
-
 }

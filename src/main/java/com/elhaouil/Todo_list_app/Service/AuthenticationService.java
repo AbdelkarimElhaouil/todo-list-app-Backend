@@ -8,7 +8,6 @@ import com.elhaouil.Todo_list_app.Repo.RoleRepo;
 import com.elhaouil.Todo_list_app.Repo.UserRepo;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

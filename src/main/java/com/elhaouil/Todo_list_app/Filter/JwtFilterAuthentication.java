@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,7 +33,8 @@ public class JwtFilterAuthentication extends OncePerRequestFilter {
         }
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null)
         {
-            UserPrincipal userPrincipal = new UserPrincipal(userRepo.findByUsername(username));
+            UserPrincipal userPrincipal =
+                    new UserPrincipal(userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found")));
             if(service.validateToken(token, userPrincipal)){
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());

@@ -5,20 +5,21 @@ import com.elhaouil.Todo_list_app.Model.Role;
 import com.elhaouil.Todo_list_app.Model.User;
 import com.elhaouil.Todo_list_app.Repo.RoleRepo;
 import com.elhaouil.Todo_list_app.Repo.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
-    @Autowired
-    UserRepo userRepo;
-    @Autowired
-    User user;
-    RoleRepo roleRepo;
+
+    public final UserRepo userRepo;
+    public final RoleRepo roleRepo;
 
     public void deleteById(long id) {
         userRepo.deleteById(id);
@@ -43,10 +44,9 @@ public class AdminService {
     }
 
     public ResponseEntity<UserDetailsDTO> setAdmin(String username) {
-        user = userRepo.findByUsername(username);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
         Role role = roleRepo.findById(1);
         user.getRoles().add(role);
         UserDetailsDTO userDto = UserDetailsDTO.builder()

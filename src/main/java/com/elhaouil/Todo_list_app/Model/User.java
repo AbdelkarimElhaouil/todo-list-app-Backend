@@ -67,5 +67,4 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();
 
-
 }
