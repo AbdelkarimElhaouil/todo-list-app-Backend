@@ -52,6 +52,16 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> userCred){
+        String token = userCred.get("token");
+        String email = userCred.get("email");
+        String password = userCred.get("password");
+        if(authenticationService.verifyToken(token)){
+            return authenticationService.resetPassword(email, password);
+        }
+        return ResponseEntity.badRequest().body("something went wrong");
+    }
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> token){
@@ -62,15 +72,9 @@ public class AuthenticationController {
         return ResponseEntity.badRequest().body("Invalid verification");
     }
 
-    @PostMapping("/verification-code")
+    @PostMapping("/resend-code")
     public ResponseEntity<?> resendCode(@RequestBody Map<String, String> email){
-        try {
-            String extractedEmail = email.get("email");
-            authenticationService.resendCode(extractedEmail);
-            return ResponseEntity.ok("new code sent, Check your email");
-        }
-        catch (UsernameNotFoundException e){
-           return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String extractedEmail = email.get("email");
+        return authenticationService.resendCode(extractedEmail);
     }
 }

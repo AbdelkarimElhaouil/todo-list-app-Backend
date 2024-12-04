@@ -11,7 +11,7 @@ public class UserPatchDTO {
     private String password;
     private String email;
 
-    public boolean checkEmailFormat(String email){
+    public static boolean checkEmailFormat(String email){
         if (email == null || email.isBlank()) return false;
         String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@gmail.com$";
         Pattern emailPattern = Pattern.compile(EMAIL_REGEX);

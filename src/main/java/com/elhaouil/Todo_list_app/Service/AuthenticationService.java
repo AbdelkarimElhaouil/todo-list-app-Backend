@@ -1,5 +1,6 @@
 package com.elhaouil.Todo_list_app.Service;
 
+import com.elhaouil.Todo_list_app.DTO.UserPatchDTO;
 import com.elhaouil.Todo_list_app.DTO.UserRegistrationDTO;
 import com.elhaouil.Todo_list_app.Exception.UserInvalidRegistration;
 import com.elhaouil.Todo_list_app.Model.Role;
@@ -8,6 +9,7 @@ import com.elhaouil.Todo_list_app.Repo.RoleRepo;
 import com.elhaouil.Todo_list_app.Repo.UserRepo;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,10 +55,23 @@ public class AuthenticationService {
         emailSenderService.sendVerificationEmail(myUser.getEmail(), token);
     }
 
-    public void resendCode(String email) {
+    public ResponseEntity<String> resetPassword(String email, String newPassword){
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No such User with that email"));
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepo.save(user);
+        return ResponseEntity.ok("Password has been changed successfully");
+    }
+
+    public ResponseEntity<String> resendCode(String email) {
+        if(!UserPatchDTO.checkEmailFormat(email)){
+            throw new RuntimeException("Email is not Formatted correctly");
+        }
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
         String token = emailTokenService.createToken(user);
         emailSenderService.sendVerificationEmail(email, token);
+        return ResponseEntity.ok("check your Email");
     }
+
 }
