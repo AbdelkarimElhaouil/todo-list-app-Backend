@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +25,10 @@ public class UserController {
         return service.patchUser(user, username);
     }
 
-
+    @PostMapping("/uploadProfilePicture")
+    public ResponseEntity<String> uploadPic(@RequestBody MultipartFile profilePicture){
+        return service.savePicture(profilePicture);
+    }
 
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(@RequestBody UserRegistrationDTO user, HttpServletRequest request) {

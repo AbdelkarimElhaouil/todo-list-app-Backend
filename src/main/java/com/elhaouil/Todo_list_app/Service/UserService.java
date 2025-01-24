@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 
@@ -95,5 +96,8 @@ public ResponseEntity<String> updateUser(UserRegistrationDTO updatedUser, String
      userRepo.save(user);
      return ResponseEntity.ok("The User Updated Successfully");
 }
+
+    public ResponseEntity<String> savePicture(MultipartFile profilePicture) {
+    }
 }
 
