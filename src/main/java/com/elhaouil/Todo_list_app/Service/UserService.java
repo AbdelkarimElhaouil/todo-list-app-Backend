@@ -3,8 +3,11 @@ package com.elhaouil.Todo_list_app.Service;
 import com.elhaouil.Todo_list_app.DTO.UserPatchDTO;
 import com.elhaouil.Todo_list_app.DTO.UserRegistrationDTO;
 import com.elhaouil.Todo_list_app.Model.User;
+import com.elhaouil.Todo_list_app.Model.UserImage;
+import com.elhaouil.Todo_list_app.Repo.UserImageRepo;
 import com.elhaouil.Todo_list_app.Repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +22,7 @@ import java.security.InvalidParameterException;
 public class UserService {
 
     private final UserRepo userRepo;
+    private final UserImageRepo imageRepo;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -97,7 +101,18 @@ public ResponseEntity<String> updateUser(UserRegistrationDTO updatedUser, String
      return ResponseEntity.ok("The User Updated Successfully");
 }
 
-    public ResponseEntity<String> savePicture(MultipartFile profilePicture) {
+public ResponseEntity<String> savePicture(MultipartFile profilePicture, String username) throws FileUploadException {
+    User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User 404"));
+    if(profilePicture.isEmpty()){
+        throw new FileUploadException("File is empty");
+    }
+    UserImage userPic = new UserImage();
+    userPic.setUser(user);
+    userPic.setContentType(profilePicture.getContentType());
+    userPic.setImageName(profilePicture.getOriginalFilename());
+    imageRepo.save(userPic);
+    return ResponseEntity.ok("Profile picture was Added Successfully");
     }
 }
 
