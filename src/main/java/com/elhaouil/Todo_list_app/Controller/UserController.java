@@ -5,12 +5,12 @@ import com.elhaouil.Todo_list_app.DTO.UserRegistrationDTO;
 import com.elhaouil.Todo_list_app.Jwt.JwtService;
 import com.elhaouil.Todo_list_app.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,10 +28,17 @@ public class UserController {
     }
 
     @PostMapping("/uploadProfilePicture")
-    public ResponseEntity<String> uploadPic(@RequestParam("file") MultipartFile profilePicture, HttpServletRequest request) throws FileUploadException {
+    public ResponseEntity<String> uploadPic(@RequestParam("file") MultipartFile profilePicture, HttpServletRequest request) throws IOException {
         String token = request.getHeader("Authorization").substring(7);
         String username = jwtService.extractUsername(token);
         return service.savePicture(profilePicture, username);
+    }
+
+    @GetMapping("/getProfilePic")
+    public ResponseEntity<?> displayProfilePicture(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
+        return service.displayPicture(username);
     }
 
     @PutMapping("/user")

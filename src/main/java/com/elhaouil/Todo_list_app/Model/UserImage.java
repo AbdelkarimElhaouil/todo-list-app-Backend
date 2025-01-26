@@ -21,7 +21,7 @@ public class UserImage {
     User user;
 
     @Lob
-    private Byte[] imageData;
+    private byte[] imageData;
 
     @Column(nullable = false)
     private String imageName;

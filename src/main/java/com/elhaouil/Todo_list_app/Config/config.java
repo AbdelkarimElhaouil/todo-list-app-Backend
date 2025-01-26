@@ -1,6 +1,7 @@
 package com.elhaouil.Todo_list_app.Config;
 
 import com.elhaouil.Todo_list_app.Filter.JwtFilterAuthentication;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +21,15 @@ import javax.naming.ConfigurationException;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class config {
 
-    @Autowired
-    UserDetailsService userDetailsServiceService;
-    @Autowired
-    JwtFilterAuthentication jwtFilter;
+    private final UserDetailsService userDetailsServiceService;
+    private final JwtFilterAuthentication jwtFilter;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(5);
     }
 
 
@@ -47,7 +47,7 @@ public class config {
     public AuthenticationProvider authProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsServiceService);
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(5));
+        provider.setPasswordEncoder(bCryptPasswordEncoder());
         return provider;
     }
 
