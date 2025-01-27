@@ -5,6 +5,7 @@ import com.elhaouil.Todo_list_app.Exception.UserInvalidRegistration;
 import com.elhaouil.Todo_list_app.Jwt.JwtService;
 import com.elhaouil.Todo_list_app.Service.AuthenticationService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,33 +40,32 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> home(@RequestBody UserRegistrationDTO user) {
-        try {
-            Authentication auth = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-            if (auth.isAuthenticated())
-                return ResponseEntity.ok(jwtService.generateJwt(user.getUsername()));
-            else return ResponseEntity.status(401).body("UNAUTHORIZED");
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("layn3elwaldikalkdab");
-        }
+    public ResponseEntity<?> home(@RequestBody Map<String, String> user) {
+        String username = user.get("username");
+        String password = user.get("password");
+        Authentication auth = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        if (auth.isAuthenticated())
+            return ResponseEntity.ok(jwtService.generateJwt(username));
+        else return ResponseEntity.status(401).body("UNAUTHORIZED");
     }
 
     @PostMapping("reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> userCred){
-        String token = userCred.get("token");
+        String code = userCred.get("code");
         String email = userCred.get("email");
         String password = userCred.get("password");
-        if(authenticationService.verifyToken(token)){
+        if(authenticationService.verifyToken(code)){
             return authenticationService.resetPassword(email, password);
         }
         return ResponseEntity.badRequest().body("something went wrong");
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> token){
-        String extractedToken = token.get("token");
-        if(authenticationService.verifyToken(extractedToken)){
+    @PostMapping("/verify-code")
+    public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> mapCode, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        String code = mapCode.get("code");
+        if(authenticationService.verifyToken(code)){
             return ResponseEntity.ok("Account Verified successfully");
         }
         return ResponseEntity.badRequest().body("Invalid verification");

@@ -31,6 +31,7 @@ public class AuthenticationService {
         return emailTokenService.validateToken(token);
     }
 
+
     public void register(UserRegistrationDTO user) throws MessagingException {
 
         if(userRepo.existsByUsername(user.getUsername())) {

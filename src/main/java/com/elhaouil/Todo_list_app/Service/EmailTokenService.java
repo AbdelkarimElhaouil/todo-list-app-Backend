@@ -44,7 +44,9 @@ public class EmailTokenService {
     public boolean validateToken(String token){
        EmailToken emailToken = emailTokenRepo.findByToken(token)
                .orElseThrow(() -> new IllegalStateException("Invalid Token"));
+
        User user = emailToken.getUser();
+
        if(emailToken.getExpiresAt().isAfter(LocalDateTime.now())){
            emailToken.setValidateAt(LocalDateTime.now());
            user.setEnabled(true);
