@@ -38,8 +38,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private UserImage image;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserImage> image;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -55,7 +55,7 @@ public class User {
     @Column(nullable = false)
     private boolean accountLocked;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EmailToken> emailTokens;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -66,7 +66,7 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
 }

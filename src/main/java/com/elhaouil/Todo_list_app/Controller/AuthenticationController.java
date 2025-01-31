@@ -40,14 +40,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> home(@RequestBody Map<String, String> user) {
-        String username = user.get("username");
-        String password = user.get("password");
+    public ResponseEntity<?> home(@RequestBody UserRegistrationDTO user) {
         Authentication auth = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        if (auth.isAuthenticated())
-            return ResponseEntity.ok(jwtService.generateJwt(username));
-        else return ResponseEntity.status(401).body("UNAUTHORIZED");
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        if(auth.isAuthenticated())
+            return ResponseEntity.ok(jwtService.generateJwt(user.getUsername()));
+        else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong Credentials");
+
     }
 
     @PostMapping("reset-password")
