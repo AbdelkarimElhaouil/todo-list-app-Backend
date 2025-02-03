@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete-task")
-    public ResponseEntity<String> deleteTask(@RequestBody String desc, HttpServletRequest request) {
+    public ResponseEntity<String> deleteTask(@RequestBody String desc) {
         return service.deleteTask(desc);
     }
 

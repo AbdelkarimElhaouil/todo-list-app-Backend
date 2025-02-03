@@ -20,7 +20,7 @@ public class UserImage {
     @JoinColumn(name = "user_id", unique = true)
     User user;
 
-    @Lob
+    @Column(columnDefinition = "BYTEA")
     private byte[] imageData;
 
     @Column(nullable = false)

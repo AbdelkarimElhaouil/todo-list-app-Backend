@@ -10,4 +10,8 @@ import java.util.Optional;
 @Repository
 public interface UserImageRepo extends JpaRepository<UserImage, Long> {
     Optional<UserImage> findByUser(User user);
+
+    boolean existsByUser(User user);
+
+    void deleteByUser(User user);
 }

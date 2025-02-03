@@ -10,11 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("User")
+@RequestMapping("user")
 public class UserController {
 
     private final UserService service;
@@ -27,26 +28,35 @@ public class UserController {
         return service.patchUser(user, username);
     }
 
-    @PostMapping("/uploadProfilePicture")
-    public ResponseEntity<String> uploadPic(@RequestParam("file") MultipartFile profilePicture, HttpServletRequest request) throws IOException {
+    @PostMapping("/uploadProfile")
+    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile profilePicture, HttpServletRequest request)
+            throws IOException {
         String token = request.getHeader("Authorization").substring(7);
         String username = jwtService.extractUsername(token);
         return service.savePicture(profilePicture, username);
     }
 
-    @GetMapping("/getProfilePic")
-    public ResponseEntity<?> displayProfilePicture(HttpServletRequest request){
+
+
+    @GetMapping("/displayProfile")
+    public ResponseEntity<?> displayProfilePicture(HttpServletRequest request) throws FileNotFoundException {
         String token = request.getHeader("Authorization").substring(7);
         String username = jwtService.extractUsername(token);
         return service.displayPicture(username);
     }
 
-    @PutMapping("/user")
+    @DeleteMapping("/deleteProfile")
+    public ResponseEntity<?> deleteProfile(HttpServletRequest request) throws FileNotFoundException {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
+        return service.deleteProfile(username);
+    }
+
+    @PutMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestBody UserRegistrationDTO user, HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
         String username = jwtService.extractUsername(token);
         return service.updateUser(user, username);
     }
-
 
 }

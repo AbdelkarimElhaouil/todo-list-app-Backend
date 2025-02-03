@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
@@ -110,27 +111,44 @@ public class UserService {
             throw new FileUploadException("File is empty");
         }
 
-    if(!profilePicture.getContentType().contains("jpeg") || !profilePicture.getContentType().contains("jpeg"))
-    {
-        throw new FileUploadException("File Type is not recommended");
-    }
-    UserImage userPic = new UserImage();
-    userPic.setUser(user);
+        if(profilePicture.getContentType().toLowerCase().contains("jpeg") || profilePicture.getContentType().toLowerCase().contains("png") )
+        {
+            if(imageRepo.existsByUser(user)){
+                imageRepo.deleteByUser(user);
+            }
+            UserImage userPic = new UserImage();
+            userPic.setUser(user);
+            userPic.setContentType(profilePicture.getContentType());
+            userPic.setImageName(profilePicture.getOriginalFilename());
+            userPic.setImageData(profilePicture.getInputStream().readAllBytes());
+            imageRepo.save(userPic);
+            return ResponseEntity.ok("Profile picture Added Successfully");
+        }
+        else
+            throw new FileUploadException("Image Type is not recommended");
 
-    userPic.setContentType(profilePicture.getContentType());
-    userPic.setImageName(profilePicture.getOriginalFilename());
-    userPic.setImageData(profilePicture.getBytes());
-    imageRepo.save(userPic);
-    return ResponseEntity.ok("Profile picture Added Successfully");
     }
 
-    public ResponseEntity<?> displayPicture(String username) {
+    public ResponseEntity<?> displayPicture(String username) throws FileNotFoundException {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User 404"));
-        UserImage image = imageRepo.findByUser(user).orElseThrow();
+        UserImage image = imageRepo.findByUser(user)
+                .orElseThrow(() -> new FileNotFoundException("Profile Picture doesn't exist, You should add a profile picture"));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(image.getContentType()))
                 .body(image.getImageData());
+    }
+
+    public ResponseEntity<?> deleteProfile(String username) throws FileNotFoundException {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User 404"));
+        if(!imageRepo.existsByUser(user)){
+            throw new FileNotFoundException("There is no profile picture to delete");
+        }
+        imageRepo.deleteByUser(user);
+        return ResponseEntity.ok()
+                .body("Your profile picture Deleted successfully");
+
     }
 }
 
