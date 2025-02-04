@@ -1,6 +1,5 @@
 package com.elhaouil.Todo_list_app.Controller;
 
-import com.elhaouil.Todo_list_app.DTO.TaskDTO;
 import com.elhaouil.Todo_list_app.Jwt.JwtService;
 import com.elhaouil.Todo_list_app.Service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;

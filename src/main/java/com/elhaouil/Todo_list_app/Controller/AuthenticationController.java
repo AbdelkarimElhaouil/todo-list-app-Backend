@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -27,6 +26,11 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+
+    @GetMapping("Welcome")
+    public ResponseEntity<String> welcome(){
+        return ResponseEntity.ok().body("Welcome");
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid UserRegistrationDTO user) {
@@ -50,7 +54,7 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> userCred){
         String code = userCred.get("code");
         String email = userCred.get("email");
