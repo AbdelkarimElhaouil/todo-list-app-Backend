@@ -37,7 +37,6 @@ public class UserController {
     }
 
 
-
     @GetMapping("/displayProfile")
     public ResponseEntity<?> displayProfilePicture(HttpServletRequest request) throws FileNotFoundException {
         String token = request.getHeader("Authorization").substring(7);

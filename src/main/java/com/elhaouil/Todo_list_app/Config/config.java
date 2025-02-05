@@ -62,7 +62,7 @@ public class config {
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Login(Customizer.withDefaults())
-                .logout(Customizer.withDefaults())
+//                .logout(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

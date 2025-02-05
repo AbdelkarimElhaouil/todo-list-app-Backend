@@ -27,7 +27,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    @GetMapping("Welcome")
+    @GetMapping("/welcome")
     public ResponseEntity<String> welcome(){
         return ResponseEntity.ok().body("Welcome");
     }
